@@ -5,3 +5,4 @@ version = "0.1.0"
 
 [dependencies]
 rand = "0.3.16"
+trivial_colours = "0.3.0"
