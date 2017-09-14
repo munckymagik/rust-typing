@@ -20,7 +20,8 @@ fn main() {
     let start_time = Instant::now();
     let timeout = Duration::from_secs(60);
 
-    let f = File::open("/usr/share/dict/words").unwrap();
+    let f = File::open("/usr/share/dict/words")
+                 .expect("/usr/share/dict/words not found");
     let reader = BufReader::new(f);
     let mut words = vec![];
 
@@ -38,20 +39,22 @@ fn main() {
         }
 
         let word = rng.choose(&words).unwrap();
+
         while word != input.trim() {
             let time_remaining = timeout.checked_sub(start_time.elapsed())
                                         .unwrap_or_default();
-            println!("{}Time remaining {}s{}",
-                     Colour::Magenta,
-                     time_remaining.as_secs(),
-                     Reset);
 
+            print!("{}{}s{} ",
+                   Colour::Magenta,
+                   time_remaining.as_secs(),
+                   Reset);
             println!("{}{}{}", Colour::Cyan, word, Reset);
-            print!("? ");
-            io::stdout().flush().unwrap();
+
+            print!("> ");
+            io::stdout().flush().expect("Error flushing stdout");
 
             input.clear();
-            io::stdin().read_line(&mut input).unwrap();
+            io::stdin().read_line(&mut input).expect("Error reading input");
         }
     }
 }
