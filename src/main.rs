@@ -10,6 +10,8 @@ use std::time::{Duration, Instant};
 use rand::Rng;
 use trivial_colours::{Colour, Reset};
 
+const WORD_LIST_FILE: &str = "/usr/share/dict/words";
+
 fn main() {
     println!("{}{} v{}{}",
              Colour::Blue,
@@ -20,14 +22,7 @@ fn main() {
     let start_time = Instant::now();
     let timeout = Duration::from_secs(60);
 
-    let f = File::open("/usr/share/dict/words")
-                 .expect("/usr/share/dict/words not found");
-    let reader = BufReader::new(f);
-    let mut words = vec![];
-
-    for line in reader.lines() {
-        words.push(line.unwrap().trim().to_owned());
-    }
+    let words = load_words(WORD_LIST_FILE);
 
     let mut rng = rand::thread_rng();
     let mut input = String::new();
@@ -57,4 +52,17 @@ fn main() {
             io::stdin().read_line(&mut input).expect("Error reading input");
         }
     }
+}
+
+fn load_words(word_list_file: &str) -> Vec<String> {
+    let mut words = vec![];
+    let file = File::open(word_list_file)
+                    .expect(&(String::new() + word_list_file + " not found"));
+    let reader = BufReader::new(file);
+
+    for line in reader.lines() {
+        words.push(line.unwrap().trim().to_owned());
+    }
+
+    words
 }
