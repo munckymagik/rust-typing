@@ -26,3 +26,7 @@ So run you can now just execute:
 ```
 typing
 ```
+
+# Usage Example
+
+![rust-typing](./rust-typing.png)
