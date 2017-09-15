@@ -11,12 +11,13 @@ use rand::{Rng, ThreadRng};
 use trivial_colours::{Colour, Reset};
 
 const WORD_LIST_FILE: &str = "/usr/share/dict/words";
+const TIMEOUT_SECS: u64 = 60;
 
 fn main() {
     show_banner();
 
     let start_time = Instant::now();
-    let timeout = Duration::from_secs(10);
+    let timeout = Duration::from_secs(TIMEOUT_SECS);
     let words = load_words(WORD_LIST_FILE);
     let mut rng = rand::thread_rng();
 
