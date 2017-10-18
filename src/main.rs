@@ -25,28 +25,44 @@ fn main() {
 }
 
 fn run(start_time: Instant, timeout: Duration, rng: &mut ThreadRng, words: &[String]) {
+    let mut num_mistakes: i32 = 0;
+    let mut num_words: i32 = 0;
+
     loop {
         if start_time.elapsed() >= timeout {
             println!("Time's up!");
+            println!("{}{}{} words, {}{}{} mistakes",
+                     Colour::Green,
+                     num_words,
+                     Reset,
+                     Colour::Red,
+                     num_mistakes,
+                     Reset);
             break;
         }
 
         let mut buffer = String::new();
         let word = rng.choose(&words).unwrap();
+        let mut attempts: i32 = 0;
+        num_words += 1;
 
         while word != buffer.trim() {
+            attempts += 1;
             let time_remaining = timeout.checked_sub(start_time.elapsed())
                                         .unwrap_or_default();
 
-            show_prompt(word, time_remaining);
+            show_prompt(word, time_remaining, num_mistakes + attempts - 1);
 
             buffer.clear();
             io::stdin().read_line(&mut buffer).expect("Error reading input");
         }
+
+        num_mistakes += attempts - 1;
     }
 }
 
-fn show_prompt(word: &str, time_remaining: Duration) {
+fn show_prompt(word: &str, time_remaining: Duration, num_mistakes: i32) {
+    print!("{}{}{} ", Colour::Red, num_mistakes, Reset);
     print!("{}{}s{} ", Colour::Magenta, time_remaining.as_secs(), Reset);
     print!("{}{}{}", Colour::Cyan, word, Reset);
     println!();
