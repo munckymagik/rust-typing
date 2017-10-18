@@ -51,7 +51,10 @@ fn run(start_time: Instant, timeout: Duration, rng: &mut ThreadRng, words: &[Str
             let time_remaining = timeout.checked_sub(start_time.elapsed())
                                         .unwrap_or_default();
 
-            show_prompt(word, time_remaining, num_mistakes + attempts - 1);
+            show_prompt(word,
+                        time_remaining,
+                        num_words,
+                        num_mistakes + attempts - 1);
 
             buffer.clear();
             io::stdin().read_line(&mut buffer).expect("Error reading input");
@@ -61,8 +64,9 @@ fn run(start_time: Instant, timeout: Duration, rng: &mut ThreadRng, words: &[Str
     }
 }
 
-fn show_prompt(word: &str, time_remaining: Duration, num_mistakes: i32) {
-    print!("{}{}{} ", Colour::Red, num_mistakes, Reset);
+fn show_prompt(word: &str, time_remaining: Duration, num_words: i32, num_mistakes: i32) {
+    if num_mistakes > 0 { print!("{}", Colour::Red) };
+    print!("{}{}/{} ", num_mistakes, Reset, num_words);
     print!("{}{}s{} ", Colour::Magenta, time_remaining.as_secs(), Reset);
     print!("{}{}{}", Colour::Cyan, word, Reset);
     println!();
